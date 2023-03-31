@@ -1,0 +1,18 @@
+# might be needed later
+
+Software packages 😎
+
+MS Excel
+
+Lindo, LPSolve
+
+AMPL/CPLEX: modeling language and “solver” for large and complex
+LP/IP problems
+
+Sub-Optimal Algorithms (Heuristics)  😒
+
+Simulated annealing
+
+Genetic algorithms
+
+Tabu search

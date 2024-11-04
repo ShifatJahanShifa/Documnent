@@ -1,0 +1,192 @@
+CLI mode for redis. all commands i have practiced.
+
+
+Pinging Redis server on redis:6379...
+Connected.
+Ready to execute commands.
+>> set name shifa
+
+"OK"
+>> get name
+
+"shifa"
+>> set age 22
+
+"OK"
+>> get age
+
+"22"
+>> set class 3
+
+"OK"
+>> get class
+
+"3"
+>> exists class
+
+(integer) 1
+>> del class
+
+(integer) 1
+>> exists class
+
+(integer) 0
+>> keys *
+
+1) "rate_limit:111"
+2) "111_counter"
+3) "111"
+4) "111_last_reset_time"
+5) "111_last_updated"
+6) "name"
+7) "age"
+8) "111_bucket_size"
+>> setex how 5 10
+
+"OK"
+>> ttl how
+
+(integer) -2
+>> setex how 10 10
+
+"OK"
+>> ttl how
+
+(integer) 7
+>> ttl how
+
+(integer) 6
+>> ttl how
+
+(integer) 5
+>> ttl how
+
+(integer) 4
+>> ttl how
+
+(integer) 4
+>> ttl how
+
+(integer) 3
+>> ttl how
+
+(integer) 2
+>> ttl how
+
+(integer) 1
+>> ttl how
+
+(integer) 1
+>> ttl how
+
+(integer) -2
+>> ttl name
+
+(integer) -1
+>> lpush person john
+
+(integer) 1
+>> get person
+
+(error) WRONGTYPE Operation against a key holding the wrong kind of value
+>> lrange 0 -1
+
+(error) wrong number of arguments for 'lrange' command
+>> lrange person 0 -1
+
+1) "john"
+>> lpush person doe
+
+(integer) 2
+>> lrange person 0 -1
+
+1) "doe"
+2) "john"
+>> rpush person milar
+
+(integer) 3
+>> lrange person 0 -1
+
+1) "doe"
+2) "john"
+3) "milar"
+>> lpop person
+
+"doe"
+>> lrange person 0 -1
+
+1) "john"
+2) "milar"
+>> rpop person
+
+"milar"
+>> lrange person 0 -1
+
+1) "john"
+>> sadd fruits mango
+
+(integer) 1
+>> sadd fruits mango
+
+(integer) 0
+>> smembers fruits
+
+1) "mango"
+>> sadd fruits apple
+
+(integer) 1
+>> smembers fruits
+
+1) "apple"
+2) "mango"
+>> srem fruits apple
+
+(integer) 1
+>> smembers fruits
+
+1) "mango"
+>> hset flower color red
+
+(integer) 1
+>> hget flower color
+
+"red"
+>> hgetall flower
+
+1) "color"
+2) "red"
+>> keys *
+
+ 1) "flower"
+ 2) "rate_limit:111"
+ 3) "fruits"
+ 4) "111_counter"
+ 5) "111"
+ 6) "111_last_reset_time"
+ 7) "111_last_updated"
+ 8) "name"
+ 9) "age"
+10) "111_bucket_size"
+11) "person"
+>> hset flower color green
+
+(integer) 0
+>> hset flower size 20cm
+
+(integer) 1
+>> hgetall flower
+
+1) "color"
+2) "green"
+3) "size"
+4) "20cm"
+>> hdel flower size
+
+(integer) 1
+>> hgetall flower
+
+1) "color"
+2) "green"
+>> hexists flower size
+
+(integer) 0

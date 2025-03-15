@@ -1,0 +1,156 @@
+Here’s how you can implement this **temporary resource with polling and redirection** in an **Express.js API**.
+
+---
+
+### **Scenario: Asynchronous Resource Creation**
+1. The client **POSTs** a request to create a resource.
+2. The server returns **202 Accepted** with a **temporary task URL**.
+3. The client **polls the task URL** to check the status.
+4. Once completed, the server returns **303 See Other** redirecting to the final resource.
+5. The client can **DELETE** the task or the server may expire it later with **410 Gone**.
+
+---
+
+### **Express.js Implementation**
+
+```javascript
+const express = require("express");
+const app = express();
+
+app.use(express.json());
+
+let tasks = {}; // Temporary storage for tasks
+let resources = {}; // Storage for final resources
+
+// 1️⃣ Create a temporary resource (Task)
+app.post("/resources", (req, res) => {
+  const taskId = `task_${Date.now()}`;
+  
+  tasks[taskId] = {
+    status: "processing",
+    estimatedCompletion: Date.now() + 5000, // Simulate a 5-second delay
+  };
+
+  res.status(202).json({
+    message: "Resource creation in progress",
+    taskUrl: `/tasks/${taskId}`, // Client should poll this URL
+  });
+});
+
+// 2️⃣ Polling endpoint to check task status
+app.get("/tasks/:taskId", (req, res) => {
+  const taskId = req.params.taskId;
+  const task = tasks[taskId];
+
+  if (!task) {
+    return res.status(410).json({ error: "Task expired or not found" }); // 410 Gone
+  }
+
+  if (Date.now() >= task.estimatedCompletion) {
+    // Simulate resource creation completion
+    const resourceId = `resource_${Date.now()}`;
+    resources[resourceId] = { message: "Your final resource is ready!" };
+
+    // Clean up the task (Optional: Keep it for some time)
+    delete tasks[taskId];
+
+    // Return 303 See Other pointing to the final resource
+    return res.status(303).location(`/resources/${resourceId}`).send();
+  }
+
+  // Task still in progress
+  res.json({ status: "processing", estimatedCompletion: task.estimatedCompletion });
+});
+
+// 3️⃣ Final resource endpoint
+app.get("/resources/:resourceId", (req, res) => {
+  const resource = resources[req.params.resourceId];
+
+  if (!resource) {
+    return res.status(404).json({ error: "Resource not found" });
+  }
+
+  res.json(resource);
+});
+
+// 4️⃣ Allow clients to delete tasks manually
+app.delete("/tasks/:taskId", (req, res) => {
+  if (tasks[req.params.taskId]) {
+    delete tasks[req.params.taskId];
+    return res.status(204).send(); // 204 No Content
+  }
+  res.status(404).json({ error: "Task not found" });
+});
+
+// Start server
+const PORT = 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+```
+
+---
+
+### **How It Works:**
+1. **Client requests resource creation**:
+   ```http
+   POST /resources
+   ```
+   **Response (202 Accepted)**:
+   ```json
+   {
+     "message": "Resource creation in progress",
+     "taskUrl": "/tasks/task_1699801000000"
+   }
+   ```
+   
+2. **Client polls the task URL**:
+   ```http
+   GET /tasks/task_1699801000000
+   ```
+   **Response (Processing)**:
+   ```json
+   {
+     "status": "processing",
+     "estimatedCompletion": 1699801005000
+   }
+   ```
+   
+3. **After 5 seconds, the next poll returns 303 See Other**:
+   ```http
+   GET /tasks/task_1699801000000
+   ```
+   **Response (303 See Other, redirecting to the final resource)**:
+   ```http
+   HTTP/1.1 303 See Other
+   Location: /resources/resource_1699801010000
+   ```
+
+4. **Client fetches the final resource**:
+   ```http
+   GET /resources/resource_1699801010000
+   ```
+   **Response (200 OK)**:
+   ```json
+   {
+     "message": "Your final resource is ready!"
+   }
+   ```
+
+5. **If the client waits too long, the task expires (410 Gone)**:
+   ```http
+   GET /tasks/task_1699801000000
+   ```
+   **Response (410 Gone)**:
+   ```json
+   {
+     "error": "Task expired or not found"
+   }
+   ```
+
+---
+
+### **Why Use This Approach?**
+✅ Prevents long-running requests.  
+✅ Allows async processing while keeping the client informed.  
+✅ Enables retries and smooth failure handling.  
+
+Would you like me to refine it further or add more features, like WebSockets for real-time updates? 🚀

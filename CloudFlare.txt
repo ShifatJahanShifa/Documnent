@@ -1,0 +1,6 @@
+CloudFlare: what i understood is that it is an american company which provides various services. Nowadays, the leading softwares are using its services. Such as discord, leetcode and many more. It provides services
+like: CDN, DDoS mitigation, cybersecurity, reverse proxy, DNS and many more. For security purposes, almost 20% of all websites are now using cloudflare service. 
+My witness: i have seen cloudflare in use in several software like yesterday when i was trying to login the leetcode site, i needed to ensure i am human. Then i saw like the process was brought by cloudflare. Since then i became curious to know
+about the cloudflare. Also during the anti-quota movement in my country, i saw people were sharing pictures of cloudflare statistics when the internet was shut down. So yeah, i think i have some interest in exploring 
+cloudflare a little bit. 
+That's all fpr today. 

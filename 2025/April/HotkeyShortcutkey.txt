@@ -1,0 +1,13 @@
+1. windows+L - look
+2. windows+D - desktop mode or view
+3. ctrl+shift+T - to open the closed tabs
+4. alt+tab - to switch between tabs
+5. ctrl+T - to open a new tab
+
+✅ Correct usage (technically speaking):
+Term	                Proper Use
+Hotkey	                System-specific or global key binding (works anywhere)
+Shortcut Key	        app-specific key combo for speeding up actions
+
+"Hotkeys are for system-specific, not app-specific. Shortcut keys are for app-specific. But some apps use them interchangeably or 
+misuse the terms."
